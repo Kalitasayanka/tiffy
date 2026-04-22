@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { AnimatePresence, motion } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,11 +16,13 @@ const FAQ = () => {
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const itemRefs = useRef([]);
+  const contentRefs = useRef([]);
   const ctaRef = useRef(null);
   const catRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Entrance animations
       gsap.fromTo(headerRef.current,
         { opacity: 0, y: 40 },
         { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
@@ -55,6 +56,18 @@ const FAQ = () => {
     return () => ctx.revert();
   }, []);
 
+  // Handle accordion animation with GSAP
+  useEffect(() => {
+    contentRefs.current.forEach((ref, i) => {
+      if (!ref) return;
+      if (openIndex === i) {
+        gsap.to(ref, { height: 'auto', opacity: 1, marginTop: '0.85rem', duration: 0.4, ease: 'power2.out' });
+      } else {
+        gsap.to(ref, { height: 0, opacity: 0, marginTop: 0, duration: 0.35, ease: 'power2.inOut' });
+      }
+    });
+  }, [openIndex]);
+
   return (
     <section id="faq" ref={sectionRef} className="container py-5 my-5">
       
@@ -71,7 +84,7 @@ const FAQ = () => {
       </div>
 
       <div className="row g-5">
-        {/* Category Sidebar - Stacks on mobile */}
+        {/* Category Sidebar */}
         <div className="col-12 col-md-4 col-lg-3">
           <div ref={catRef} style={{ opacity: 0 }}>
             <p className="small fw-bold text-uppercase mb-3 letter-spacing-1" style={{ color: 'var(--text-light)' }}>Categories</p>
@@ -87,6 +100,7 @@ const FAQ = () => {
                     color: i === 0 ? 'var(--primary)' : 'var(--text-light)',
                     fontWeight: i === 0 ? 700 : 500
                   }}
+                  onClick={() => i === 0 ? setOpenIndex(0) : null}
                 >
                   {cat}
                 </button>
@@ -108,38 +122,33 @@ const FAQ = () => {
                   className={`p-4 rounded-4 cursor-pointer transition-all`}
                   style={{ 
                     border: `1px solid ${isOpen ? 'var(--primary-glow)' : 'transparent'}`, 
-                    background: isOpen ? 'var(--bg-card)' : 'var(--bg-elevated)',
+                    background: isOpen ? 'white' : 'var(--bg-elevated)',
                     boxShadow: isOpen ? 'var(--shadow-sm)' : 'none',
                     opacity: 0 
                   }}
                 >
                   <div className="d-flex justify-content-between align-items-center gap-3">
                     <h4 className="h6 fw-bold mb-0" style={{ color: 'var(--text-dark)' }}>{faq.question}</h4>
-                    <motion.div
-                      animate={{ rotate: isOpen ? 180 : 0 }}
+                    <div
                       className={`rounded-circle d-flex align-items-center justify-content-center`}
                       style={{ 
                         width: 32, height: 32, flexShrink: 0,
                         background: isOpen ? 'var(--primary)' : 'white',
                         color: isOpen ? 'white' : 'var(--text-light)',
-                        border: `1px solid ${isOpen ? 'transparent' : 'var(--border-light)'}`
+                        border: `1px solid ${isOpen ? 'transparent' : 'var(--border-light)'}`,
+                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'all 0.4s ease'
                       }}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="6 9 12 15 18 9" /></svg>
-                    </motion.div>
+                    </div>
                   </div>
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <p className="small mt-3 mb-0" style={{ lineHeight: 1.7, color: 'var(--text-light)' }}>{faq.answer}</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <div
+                    ref={el => contentRefs.current[index] = el}
+                    style={{ overflow: 'hidden', height: index === openIndex ? 'auto' : 0, opacity: index === openIndex ? 1 : 0 }}
+                  >
+                    <p className="small mb-0" style={{ lineHeight: 1.7, color: 'var(--text-light)' }}>{faq.answer}</p>
+                  </div>
                 </div>
               );
             })}

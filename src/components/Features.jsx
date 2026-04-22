@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { AnimatePresence, motion } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,6 +12,7 @@ const Features = () => {
   const headerRef = useRef(null);
   const cardsRef = useRef([]);
   const mapRef = useRef(null);
+  const mapContentRef = useRef(null);
   const deliveryRef = useRef(null);
   const deliveryItemsRef = useRef([]);
 
@@ -74,6 +74,16 @@ const Features = () => {
 
     return () => ctx.revert();
   }, []);
+
+  // Animate map content entrance with GSAP
+  useEffect(() => {
+    if (!loading && mapContentRef.current) {
+      gsap.fromTo(mapContentRef.current,
+        { opacity: 0, filter: 'blur(10px)', scale: 1.05 },
+        { opacity: 1, filter: 'blur(0px)', scale: 1, duration: 1.2, ease: 'expo.out' }
+      );
+    }
+  }, [loading]);
 
   const handleCardMove = (e, el) => {
     const rect = el.getBoundingClientRect();
@@ -173,19 +183,17 @@ const Features = () => {
                 <p className="fw-bold" style={{ color: 'var(--text-light)' }}>Locating delivery zone…</p>
               </div>
             ) : (
-              <AnimatePresence>
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ width: '100%', height: '100%', display: 'flex' }}>
-                  <iframe title="Map" width="100%" height="100%" frameBorder="0" src={getMapUrl()} style={{ border: 'none', filter: 'grayscale(0.4) contrast(1.1)', display: 'block' }} />
-                  <div style={{ position: 'absolute', top: 20, left: 20, background: 'white', padding: '12px 16px', borderRadius: 14, boxShadow: '0 4px 20px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 10 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 0 4px rgba(16,185,129,0.2)' }} />
-                    <span className="fw-bold small" style={{ color: 'var(--text-dark)' }}>Optimized Delivery Zone</span>
-                  </div>
-                  <div style={{ position: 'absolute', bottom: 20, right: 20, background: '#0F1117', color: 'white', padding: '14px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.2)', zIndex: 10 }}>
-                    <div style={{ opacity: 0.6, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>ETA</div>
-                    <div className="fw-bold h5 mb-0">24 – 38 min</div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+              <div ref={mapContentRef} style={{ width: '100%', height: '100%', display: 'flex', opacity: 0 }}>
+                <iframe title="Map" width="100%" height="100%" frameBorder="0" src={getMapUrl()} style={{ border: 'none', filter: 'grayscale(0.4) contrast(1.1)', display: 'block' }} />
+                <div style={{ position: 'absolute', top: 20, left: 20, background: 'white', padding: '12px 16px', borderRadius: 14, boxShadow: '0 4px 20px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 10 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 0 4px rgba(16,185,129,0.2)' }} />
+                  <span className="fw-bold small" style={{ color: 'var(--text-dark)' }}>Optimized Delivery Zone</span>
+                </div>
+                <div style={{ position: 'absolute', bottom: 20, right: 20, background: '#0F1117', color: 'white', padding: '14px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.2)', zIndex: 10 }}>
+                  <div style={{ opacity: 0.6, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>ETA</div>
+                  <div className="fw-bold h5 mb-0">24 – 38 min</div>
+                </div>
+              </div>
             )}
           </div>
         </div>

@@ -1,28 +1,43 @@
-import React from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ProgressBar = () => {
-  const { scrollYProgress } = useScroll();
+  const progressRef = useRef(null);
 
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.to(progressRef.current, {
+        scaleX: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: document.documentElement,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.3,
+        }
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <motion.div
+    <div
+      ref={progressRef}
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         height: '3px',
-        background: 'linear-gradient(90deg, #CC5500, #F47B20, #FF9F43)',
-        scaleX,
-        transformOrigin: '0%',
+        background: 'linear-gradient(90deg, #CC5500, #F47B20, #FF9B47)',
+        transformOrigin: '0% 50%',
+        transform: 'scaleX(0)',
         zIndex: 9999,
-        boxShadow: '0 0 12px rgba(204, 85, 0, 0.5)',
+        boxShadow: '0 0 10px rgba(204, 85, 0, 0.4)',
       }}
     />
   );
