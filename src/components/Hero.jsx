@@ -24,60 +24,190 @@ const Hero = () => {
   const blob2Ref = useRef(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.1, defaults: { ease: 'expo.out', duration: 1.2 } });
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    const ctx = gsap.context(() => {
+      // If user prefers reduced motion, skip complex animations
+      if (prefersReducedMotion) {
+        // Simple fade-in for accessibility
+        gsap.fromTo([badgeRef.current, headRef.current, subRef.current, ctaRef.current, socialRef.current, dashRef.current, chatRef.current],
+          { opacity: 0 },
+          { opacity: 1, duration: 0.8, stagger: 0.1 }
+        );
+        return;
+      }
+
+      // Master timeline with smoother easing
+      const tl = gsap.timeline({
+        delay: 0.2,
+        defaults: {
+          ease: 'power3.out',
+          duration: 1.1
+        }
+      });
+
+      // Badge with bounce effect
       tl.fromTo(badgeRef.current,
-        { opacity: 0, y: -20, scale: 0.95 },
-        { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'expo.out' }
+        { opacity: 0, y: -30, scale: 0.9, rotation: -5 },
+        { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 1.2, ease: 'back.out(1.7)' }
       );
 
+      // Headline with improved stagger and clipping
       const lines = headRef.current.querySelectorAll('.anim-line');
       tl.fromTo(lines,
-        { y: '110%', opacity: 0 },
-        { y: '0%', opacity: 1, stagger: 0.08 },
-        '-=0.8'
+        {
+          y: '120%',
+          opacity: 0,
+          clipPath: 'inset(0 0 100% 0)'
+        },
+        {
+          y: '0%',
+          opacity: 1,
+          clipPath: 'inset(0 0 0% 0)',
+          stagger: 0.12,
+          duration: 1.4,
+          ease: 'power4.out'
+        },
+        '-=0.7'
       );
 
+      // Subtitle with fade and slight scale
       tl.fromTo(subRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1 },
-        '-=0.9'
+        { opacity: 0, y: 30, scale: 0.98 },
+        { opacity: 1, y: 0, scale: 1, duration: 1.3, ease: 'expo.out' },
+        '-=1.0'
       );
 
+      // CTA buttons with enhanced stagger and bounce
       tl.fromTo(
         ctaRef.current?.querySelectorAll('button'),
-        { opacity: 0, y: 20, scale: 0.96 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.1 },
+        { opacity: 0, y: 30, scale: 0.9 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.9,
+          stagger: 0.15,
+          ease: 'back.out(1.8)'
+        },
         '-=0.8'
       );
 
+      // Social proof with fade and slide
       tl.fromTo(socialRef.current,
-        { opacity: 0, y: 12 },
-        { opacity: 1, y: 0, duration: 0.8 },
+        { opacity: 0, y: 20, filter: 'blur(10px)' },
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1 },
+        '-=0.5'
+      );
+
+      // Dashboard mockup with 3D perspective and parallax
+      tl.fromTo(dashRef.current,
+        {
+          opacity: 0,
+          y: 100,
+          rotateX: 15,
+          rotateY: -5,
+          transformPerspective: 1500,
+          scale: 0.95
+        },
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          rotateY: 0,
+          scale: 1,
+          duration: 1.8,
+          ease: 'power3.out'
+        },
         '-=0.6'
       );
 
-      tl.fromTo(dashRef.current,
-        { opacity: 0, y: 80, rotateX: 8, transformPerspective: 1200 },
-        { opacity: 1, y: 0, rotateX: 0, duration: 1.5 },
-        '-=0.8'
-      );
-
+      // Chat bubble with playful entrance
       tl.fromTo(chatRef.current,
-        { opacity: 0, scale: 0.5, x: -10 },
-        { opacity: 1, scale: 1, x: 0, duration: 0.8, ease: 'back.out(2)' },
-        '-=1.2'
+        { opacity: 0, scale: 0, rotation: -180, x: -50 },
+        {
+          opacity: 1,
+          scale: 1,
+          rotation: 0,
+          x: 0,
+          duration: 1.2,
+          ease: 'elastic.out(1.2, 0.5)'
+        },
+        '-=1.0'
       );
 
-      gsap.to(blob1Ref.current, {
-        scale: 1.15, rotation: 40, duration: 18,
-        repeat: -1, yoyo: true, ease: 'sine.inOut',
-      });
-      gsap.to(blob2Ref.current, {
-        scale: 1.12, rotation: -35, duration: 25,
-        repeat: -1, yoyo: true, ease: 'sine.inOut',
-      });
+      // Enhanced blob animations with parallax on scroll - only if not reduced motion
+      if (!prefersReducedMotion) {
+        gsap.to(blob1Ref.current, {
+          scale: 1.2,
+          rotation: 45,
+          x: '5%',
+          y: '5%',
+          duration: 20,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+        });
+
+        gsap.to(blob2Ref.current, {
+          scale: 1.15,
+          rotation: -40,
+          x: '-3%',
+          y: '-3%',
+          duration: 22,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+        });
+
+        // Add scroll-triggered parallax to hero elements
+        gsap.to(headRef.current, {
+          y: -30,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          }
+        });
+
+        gsap.to(dashRef.current, {
+          y: 50,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.5,
+          }
+        });
+      }
+
+      // Add subtle floating animation to CTA buttons on hover (always enabled for UX)
+      const buttons = ctaRef.current?.querySelectorAll('button');
+      if (buttons) {
+        buttons.forEach(btn => {
+          btn.addEventListener('mouseenter', () => {
+            gsap.to(btn, {
+              y: -5,
+              scale: 1.05,
+              boxShadow: '0 15px 35px rgba(0,0,0,0.2)',
+              duration: 0.4,
+              ease: 'power2.out'
+            });
+          });
+
+          btn.addEventListener('mouseleave', () => {
+            gsap.to(btn, {
+              y: 0,
+              scale: 1,
+              boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
+              duration: 0.6,
+              ease: 'elastic.out(1, 0.5)'
+            });
+          });
+        });
+      }
 
     }, sectionRef);
 
@@ -160,8 +290,8 @@ const Hero = () => {
       </div>
 
       {/* Dashboard mockup */}
-      <div ref={dashRef} className="d-none d-md-block mt-5 mx-auto rounded-top-5 shadow-lg border border-white border-opacity-10 overflow-hidden" 
-           style={{ opacity: 0, width: '92%', maxWidth: '1150px', height: '400px', background: 'rgba(15,17,23,0.94)' }}>
+      <div ref={dashRef} className="d-none d-md-block mt-5 mx-auto rounded-top-5 shadow-lg border border-white border-opacity-10 overflow-hidden"
+        style={{ opacity: 0, width: '92%', maxWidth: '1150px', height: '400px', background: 'rgba(15,17,23,0.94)' }}>
         <div className="p-3 border-bottom border-white border-opacity-10 d-flex gap-2">
           {[1, 2, 3].map(i => <div key={i} className="rounded-circle" style={{ width: 10, height: 10, background: i === 1 ? '#ff5f57' : i === 2 ? '#febc2e' : '#28c840' }} />)}
         </div>
@@ -178,10 +308,10 @@ const Hero = () => {
 
       {/* Chat bubble */}
       <div ref={chatRef} className="d-none d-lg-flex align-items-center gap-3 position-absolute" style={{ opacity: 0, bottom: '3.5rem', left: '3.5rem', zIndex: 10 }}>
-        <div className="rounded-circle d-flex align-items-center justify-content-center shadow-lg cursor-pointer" 
-             style={{ width: 56, height: 56, background: '#FF6B6B' }}
-             onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.1, duration: 0.4, ease: 'expo.out' })}
-             onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' })}>
+        <div className="rounded-circle d-flex align-items-center justify-content-center shadow-lg cursor-pointer"
+          style={{ width: 56, height: 56, background: '#FF6B6B' }}
+          onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.1, duration: 0.4, ease: 'expo.out' })}
+          onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' })}>
           <MessageSquare color="white" />
         </div>
         <div className="bg-white px-3 py-2 rounded-3 shadow fw-bold small text-dark">Support</div>
