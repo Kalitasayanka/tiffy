@@ -138,9 +138,8 @@ const Features = () => {
         }
       );
 
-      // Removed continuous float animation to stop cards from "dancing"
-
-        // Add scroll-triggered parallax to map
+      // Add scroll-triggered parallax to map (respecting reduced motion)
+      if (!prefersReducedMotion) {
         gsap.to(mapRef.current, {
           y: -30,
           scrollTrigger: {
