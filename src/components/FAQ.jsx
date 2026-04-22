@@ -56,121 +56,117 @@ const FAQ = () => {
   }, []);
 
   return (
-    <section id="faq" ref={sectionRef} className="container section-padding">
+    <section id="faq" ref={sectionRef} className="container py-5 my-5">
       
       {/* Header */}
-      <div ref={headerRef} style={{ textAlign: 'center', marginBottom: '4.5rem', opacity: 0 }}>
-        <span className="badge">Support</span>
-        <h2 style={{ marginBottom: '1rem' }}>
+      <div ref={headerRef} className="text-center mb-5" style={{ opacity: 0 }}>
+        <span className="badge mb-3">Support</span>
+        <h2 className="display-6 fw-bold mb-3">
           Frequently Asked<br />
           <span className="text-primary">Questions</span>
         </h2>
-        <p style={{ maxWidth: '520px', margin: '0 auto', fontSize: '1.05rem', color: 'var(--text-light)' }}>
+        <p className="mx-auto" style={{ maxWidth: '520px', color: 'var(--text-light)' }}>
           Everything you need to know about Tiffy, the ultimate tiffin management software.
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '4rem', maxWidth: '900px', margin: '0 auto' }}>
-        {/* Category Sidebar */}
-        <div ref={catRef} style={{ opacity: 0 }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-light)', marginBottom: '0.9rem' }}>
-            Categories
-          </p>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-            {['General Questions', 'Features & Usage', 'Pricing & Billing'].map((cat, i) => (
-              <li
-                key={i}
-                style={{
-                  padding: '0.65rem 1rem', borderRadius: 10,
-                  background: i === 0 ? 'var(--primary-light)' : 'transparent',
-                  color: i === 0 ? 'var(--primary)' : 'var(--text-light)',
-                  fontWeight: i === 0 ? 700 : 500, fontSize: '0.9rem', cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={e => gsap.to(e.currentTarget, { x: 4, duration: 0.2 })}
-                onMouseLeave={e => gsap.to(e.currentTarget, { x: 0, duration: 0.3 })}
-              >
-                {cat}
-              </li>
-            ))}
-          </ul>
+      <div className="row g-5">
+        {/* Category Sidebar - Stacks on mobile */}
+        <div className="col-12 col-md-4 col-lg-3">
+          <div ref={catRef} style={{ opacity: 0 }}>
+            <p className="small fw-bold text-uppercase mb-3 letter-spacing-1" style={{ color: 'var(--text-light)' }}>Categories</p>
+            <div className="d-flex flex-md-column gap-2 overflow-auto pb-3 pb-md-0 no-scrollbar">
+              {['General', 'Features', 'Pricing'].map((cat, i) => (
+                <button
+                  key={i}
+                  className={`btn border-0 text-start px-3 py-2 rounded-3 whitespace-nowrap`}
+                  style={{ 
+                    fontSize: '0.9rem', 
+                    transition: 'all 0.2s ease',
+                    background: i === 0 ? 'var(--primary-light)' : 'transparent',
+                    color: i === 0 ? 'var(--primary)' : 'var(--text-light)',
+                    fontWeight: i === 0 ? 700 : 500
+                  }}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Accordion */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
-            return (
-              <div
-                key={index}
-                ref={el => itemRefs.current[index] = el}
-                onClick={() => setOpenIndex(isOpen ? -1 : index)}
-                style={{
-                  background: isOpen ? 'white' : 'var(--bg-elevated)',
-                  borderRadius: 16, padding: '1.3rem 1.5rem',
-                  cursor: 'pointer',
-                  boxShadow: isOpen ? 'var(--shadow-md)' : 'none',
-                  border: `1px solid ${isOpen ? 'var(--primary-glow)' : 'var(--border-subtle)'}`,
-                  transition: 'all 0.3s ease',
-                  opacity: 0,
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-                  <h4 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-dark)' }}>
-                    {faq.question}
-                  </h4>
-                  <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    style={{
-                      flexShrink: 0, width: 30, height: 30, borderRadius: '50%',
-                      background: isOpen ? 'var(--primary)' : 'white',
-                      border: `1px solid ${isOpen ? 'transparent' : 'var(--border-light)'}`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: isOpen ? 'white' : 'var(--text-light)',
-                    }}
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
-                  </motion.div>
-                </div>
-                <AnimatePresence>
-                  {isOpen && (
+        {/* Accordion List */}
+        <div className="col-12 col-md-8 col-lg-9">
+          <div className="d-flex flex-column gap-3">
+            {faqs.map((faq, index) => {
+              const isOpen = openIndex === index;
+              return (
+                <div
+                  key={index}
+                  ref={el => itemRefs.current[index] = el}
+                  onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                  className={`p-4 rounded-4 cursor-pointer transition-all`}
+                  style={{ 
+                    border: `1px solid ${isOpen ? 'var(--primary-glow)' : 'transparent'}`, 
+                    background: isOpen ? 'var(--bg-card)' : 'var(--bg-elevated)',
+                    boxShadow: isOpen ? 'var(--shadow-sm)' : 'none',
+                    opacity: 0 
+                  }}
+                >
+                  <div className="d-flex justify-content-between align-items-center gap-3">
+                    <h4 className="h6 fw-bold mb-0" style={{ color: 'var(--text-dark)' }}>{faq.question}</h4>
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1, marginTop: '0.85rem' }}
-                      exit={{ height: 0, opacity: 0 }}
-                      style={{ overflow: 'hidden' }}
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      className={`rounded-circle d-flex align-items-center justify-content-center`}
+                      style={{ 
+                        width: 32, height: 32, flexShrink: 0,
+                        background: isOpen ? 'var(--primary)' : 'white',
+                        color: isOpen ? 'white' : 'var(--text-light)',
+                        border: `1px solid ${isOpen ? 'transparent' : 'var(--border-light)'}`
+                      }}
                     >
-                      <p style={{ fontSize: '0.93rem', lineHeight: 1.7, color: 'var(--text-light)' }}>
-                        {faq.answer}
-                      </p>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="6 9 12 15 18 9" /></svg>
                     </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+                  </div>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="small mt-3 mb-0" style={{ lineHeight: 1.7, color: 'var(--text-light)' }}>{faq.answer}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* CTA Strip */}
       <div
         ref={ctaRef}
-        style={{
-          opacity: 0,
-          maxWidth: '900px', margin: '5rem auto 0',
-          background: 'linear-gradient(135deg, #FFF 0%, #FFF3EB 100%)',
-          borderRadius: 24, padding: '3.5rem 4rem',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          gap: '2rem', border: '1px solid var(--border-light)',
-        }}
+        className="mt-5 p-4 p-md-5 rounded-5 border shadow-sm text-center text-md-start"
+        style={{ opacity: 0, background: 'linear-gradient(135deg, #FFF 0%, #FFF3EB 100%)', borderColor: 'var(--border-light)' }}
       >
-        <div>
-          <h3 style={{ marginBottom: '0.6rem' }}>Still have questions?</h3>
-          <p style={{ fontSize: '1rem', color: 'var(--text-light)' }}>Our team is ready to help you optimize your tiffin service operations.</p>
-        </div>
-        <div style={{ display: 'flex', gap: '1rem', flexShrink: 0 }}>
-          <button className="btn-primary">Contact Support</button>
-          <button style={{ background: 'white', color: 'var(--text-dark)', padding: '0.85rem 1.75rem', borderRadius: '50px', fontWeight: '700', fontSize: '0.95rem', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)', cursor: 'pointer' }}>View Docs</button>
+        <div className="row align-items-center g-4">
+          <div className="col-12 col-md-7">
+            <h3 className="fw-bold mb-2">Still have questions?</h3>
+            <p className="mb-0" style={{ color: 'var(--text-light)' }}>Our team is ready to help you optimize your tiffin service operations.</p>
+          </div>
+          <div className="col-12 col-md-5 d-flex gap-2 justify-content-center justify-content-md-end">
+            <button className="btn-primary">Contact Support</button>
+            <button 
+              className="rounded-pill px-4 py-2 fw-bold"
+              style={{ background: 'white', color: 'var(--text-dark)', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)' }}
+            >
+              View Docs
+            </button>
+          </div>
         </div>
       </div>
     </section>

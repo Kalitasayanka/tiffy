@@ -91,24 +91,20 @@ const Hero = () => {
     <section
       id="hero"
       ref={sectionRef}
+      className="d-flex flex-column align-items-center justify-content-center text-center px-3"
       style={{
         background: 'linear-gradient(160deg, #E8500A 0%, #F47B20 45%, #F99B47 100%)',
         minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        padding: '8rem 1.5rem 0',
+        padding: '8rem 0 0',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
       {/* Ambient blobs */}
-      <div ref={blob1Ref} style={{ position: 'absolute', top: '-15%', right: '-8%', width: '50%', height: '50%', background: 'rgba(255,255,255,0.06)', borderRadius: '40% 60% 70% 30%/30% 30% 70% 70%', filter: 'blur(60px)' }} />
-      <div ref={blob2Ref} style={{ position: 'absolute', bottom: '5%', left: '-8%', width: '40%', height: '40%', background: 'rgba(255,255,255,0.07)', borderRadius: '60% 40% 30% 70%/60% 30% 70% 40%', filter: 'blur(80px)' }} />
+      <div ref={blob1Ref} style={{ position: 'absolute', top: '-15%', right: '-8%', width: '60vw', height: '60vw', background: 'rgba(255,255,255,0.06)', borderRadius: '50%', filter: 'blur(80px)', zIndex: 1 }} />
+      <div ref={blob2Ref} style={{ position: 'absolute', bottom: '5%', left: '-8%', width: '50vw', height: '50vw', background: 'rgba(255,255,255,0.07)', borderRadius: '50%', filter: 'blur(100px)', zIndex: 1 }} />
 
-      <div className="container" style={{ position: 'relative', zIndex: 5, maxWidth: 960 }}>
+      <div className="container position-relative" style={{ zIndex: 5, maxWidth: 960 }}>
         {/* Badge */}
         <div ref={badgeRef} style={{ opacity: 0, marginBottom: '2rem' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '50px', padding: '0.4rem 1.1rem', color: 'white', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
@@ -126,7 +122,7 @@ const Hero = () => {
           </AnimLine>
           <AnimLine>
             <h1 style={{ fontSize: 'clamp(2.8rem, 6.5vw, 5.5rem)', fontWeight: 800, color: 'white', lineHeight: 1.05, letterSpacing: '-0.04em', margin: 0 }}>
-              Tiffin Service Businesses
+              Tiffin Businesses
             </h1>
           </AnimLine>
         </div>
@@ -137,12 +133,12 @@ const Hero = () => {
         </p>
 
         {/* CTAs */}
-        <div ref={ctaRef} style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <div ref={ctaRef} className="d-flex flex-wrap gap-3 justify-content-center">
           <button
             style={{ background: 'white', color: '#CC5500', padding: '1rem 2.25rem', borderRadius: '50px', fontSize: '1.05rem', fontWeight: 800, border: 'none', boxShadow: '0 8px 32px rgba(0,0,0,0.15)', cursor: 'pointer' }}
             onMouseEnter={onBtnEnter} onMouseLeave={onBtnLeave}
           >
-            Start free trial — 15 days
+            Start free trial
           </button>
           <button
             style={{ background: 'rgba(255,255,255,0.15)', color: 'white', padding: '1rem 2.25rem', borderRadius: '50px', fontSize: '1.05rem', fontWeight: 700, border: '1px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)', cursor: 'pointer' }}
@@ -153,45 +149,42 @@ const Hero = () => {
         </div>
 
         {/* Social proof */}
-        <div ref={socialRef} style={{ opacity: 0, marginTop: '2.5rem', color: 'rgba(255,255,255,0.75)', fontSize: '0.88rem', fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}>
-          <div style={{ display: 'flex' }}>
+        <div ref={socialRef} className="d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4" style={{ opacity: 0, color: 'rgba(255,255,255,0.75)', fontSize: '0.88rem', fontWeight: 500 }}>
+          <div className="d-flex">
             {[1, 2, 3, 4].map(i => (
               <div key={i} style={{ width: 30, height: 30, borderRadius: '50%', background: `hsl(${i * 40}, 70%, 60%)`, border: '2px solid white', marginLeft: i > 1 ? -10 : 0 }} />
             ))}
           </div>
-          <span>Trusted by <strong style={{ color: 'white' }}>2,000+</strong> tiffin businesses</span>
+          <span>Trusted by <strong style={{ color: 'white' }}>2,000+</strong> businesses</span>
         </div>
       </div>
 
       {/* Dashboard mockup */}
-      <div ref={dashRef} style={{ opacity: 0, width: '90%', maxWidth: 1100, height: 380, background: 'rgba(15,17,23,0.92)', marginTop: '5rem', borderRadius: '24px 24px 0 0', boxShadow: '0 -20px 80px rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.08)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '1.25rem 1.75rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          {[1, 2, 3].map(i => <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: i === 1 ? '#FF5F57' : i === 2 ? '#FEBC2E' : '#28C840' }} />)}
-          <div style={{ flex: 1, height: 8, background: 'rgba(255,255,255,0.05)', borderRadius: 4, marginLeft: '1rem', maxWidth: 260 }} />
+      <div ref={dashRef} className="d-none d-md-block mt-5 mx-auto rounded-top-5 shadow-lg border border-white border-opacity-10 overflow-hidden" 
+           style={{ opacity: 0, width: '90%', maxWidth: '1100px', height: '380px', background: 'rgba(15,17,23,0.92)' }}>
+        <div className="p-3 border-bottom border-white border-opacity-10 d-flex gap-2">
+          {[1, 2, 3].map(i => <div key={i} className="rounded-circle" style={{ width: 10, height: 10, background: i === 1 ? '#ff5f57' : i === 2 ? '#febc2e' : '#28c840' }} />)}
         </div>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 900, color: 'rgba(255,255,255,0.04)', letterSpacing: '0.5em', whiteSpace: 'nowrap', userSelect: 'none' }}>
           TIFFY DASHBOARD
         </div>
-        <div style={{ display: 'flex', gap: '1rem', padding: '2rem 1.75rem' }}>
+        <div className="d-flex gap-3 p-4">
           {[180, 120, 200, 90].map((w, i) => <div key={i} style={{ width: w, height: 10, background: 'rgba(255,255,255,0.06)', borderRadius: 5 }} />)}
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', padding: '0 1.75rem' }}>
-          {[1, 2, 3].map(i => <div key={i} style={{ height: 120, background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }} />)}
+        <div className="row g-3 px-4">
+          {[1, 2, 3].map(i => <div key={i} className="col-4"><div style={{ height: 120, background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }} /></div>)}
         </div>
       </div>
 
       {/* Chat bubble */}
-      <div ref={chatRef} style={{ opacity: 0, position: 'absolute', bottom: '2.5rem', left: '2.5rem', zIndex: 10, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <div
-          style={{ width: 52, height: 52, background: '#FF6B6B', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 8px 24px rgba(255,107,107,0.3)' }}
-          onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.1, duration: 0.3 })}
-          onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.4 })}
-        >
-          <MessageSquare color="white" size={24} />
+      <div ref={chatRef} className="d-none d-lg-flex align-items-center gap-3 position-absolute" style={{ opacity: 0, bottom: '3rem', left: '3rem', zIndex: 10 }}>
+        <div className="rounded-circle bg-danger d-flex align-items-center justify-content-center shadow-lg cursor-pointer" 
+             style={{ width: 52, height: 52 }}
+             onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.1, duration: 0.3 })}
+             onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.4 })}>
+          <MessageSquare color="white" />
         </div>
-        <div style={{ background: 'white', padding: '0.5rem 1rem', borderRadius: 12, fontWeight: 700, fontSize: '0.88rem', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', color: '#0F1117' }}>
-          Support
-        </div>
+        <div className="bg-white px-3 py-2 rounded-3 shadow fw-bold small text-dark">Support</div>
       </div>
     </section>
   );

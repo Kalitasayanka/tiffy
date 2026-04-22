@@ -23,6 +23,7 @@ const Navbar = () => {
   // Magnetic button effect
   const handleBtnMove = (e) => {
     const btn = btnRef.current;
+    if (!btn) return;
     const rect = btn.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
@@ -51,11 +52,11 @@ const Navbar = () => {
         zIndex: 1000,
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '0.5rem',
-        padding: scrolled ? '0.6rem 1rem' : '0.75rem 1.25rem',
+        gap: '0.4rem',
+        padding: scrolled ? '0.6rem 0.9rem' : '0.75rem 1.25rem',
         background: scrolled
-          ? 'rgba(255,255,255,0.92)'
-          : 'rgba(255,255,255,0.15)',
+          ? 'rgba(255,255,255,0.94)'
+          : 'rgba(255,255,255,0.18)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         borderRadius: '60px',
@@ -65,13 +66,14 @@ const Navbar = () => {
         boxShadow: scrolled
           ? '0 4px 32px rgba(0,0,0,0.10), 0 1px 0 rgba(255,255,255,0.8) inset'
           : '0 8px 32px rgba(0,0,0,0.12)',
-        transition: 'top 0.4s ease, background 0.4s ease, padding 0.4s ease, border 0.4s ease, box-shadow 0.4s ease',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
         whiteSpace: 'nowrap',
+        maxWidth: '95vw'
       }}
     >
       {/* Logo */}
       <div style={{
-        fontSize: '1.2rem',
+        fontSize: '1.1rem',
         fontWeight: '800',
         letterSpacing: '-0.04em',
         color: scrolled ? '#0F1117' : 'white',
@@ -81,36 +83,38 @@ const Navbar = () => {
         tiffy
       </div>
 
-      <div style={{ width: 1, height: 18, background: scrolled ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.3)', margin: '0 0.25rem' }} />
+      <div className="d-none d-sm-flex align-items-center gap-1">
+        <div style={{ width: 1, height: 18, background: scrolled ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.3)', margin: '0 0.2rem' }} />
 
-      {['Features', 'Blog', 'Contact'].map((item, i) => (
-        <a
-          key={item}
-          ref={el => linksRef.current[i] = el}
-          href={`#${item.toLowerCase()}`}
-          onMouseEnter={e => handleLinkEnter(e.currentTarget)}
-          onMouseLeave={e => handleLinkLeave(e.currentTarget)}
-          style={{
-            color: scrolled ? '#3D3F4E' : 'rgba(255,255,255,0.92)',
-            fontWeight: '600',
-            fontSize: '0.88rem',
-            padding: '0.4rem 0.85rem',
-            borderRadius: '50px',
-            transition: 'all 0.25s ease',
-            display: 'inline-block',
-          }}
-        >
-          {item}
-        </a>
-      ))}
+        {['Features', 'Blog'].map((item, i) => (
+          <a
+            key={item}
+            ref={el => linksRef.current[i] = el}
+            href={`#${item.toLowerCase()}`}
+            onMouseEnter={e => handleLinkEnter(e.currentTarget)}
+            onMouseLeave={e => handleLinkLeave(e.currentTarget)}
+            style={{
+              color: scrolled ? '#3D3F4E' : 'rgba(255,255,255,0.95)',
+              fontWeight: '700',
+              fontSize: '0.85rem',
+              padding: '0.4rem 0.8rem',
+              borderRadius: '50px',
+              transition: 'all 0.25s ease',
+              display: 'inline-block',
+            }}
+          >
+            {item}
+          </a>
+        ))}
+      </div>
 
-      <div style={{ width: 1, height: 18, background: scrolled ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.3)', margin: '0 0.25rem' }} />
+      <div style={{ width: 1, height: 18, background: scrolled ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.3)', margin: '0 0.2rem' }} />
 
-      <a href="#login" style={{
+      <a href="#login" className="d-none d-sm-inline-block" style={{
         color: scrolled ? '#3D3F4E' : 'rgba(255,255,255,0.9)',
-        fontWeight: '600',
-        fontSize: '0.88rem',
-        padding: '0.4rem 0.75rem',
+        fontWeight: '700',
+        fontSize: '0.85rem',
+        padding: '0.4rem 0.6rem',
         transition: 'color 0.25s ease',
         display: 'inline-block',
       }}>
@@ -122,12 +126,12 @@ const Navbar = () => {
         onMouseMove={handleBtnMove}
         onMouseLeave={handleBtnLeave}
         style={{
-          padding: '0.6rem 1.25rem',
+          padding: '0.55rem 1.15rem',
           borderRadius: '50px',
           background: scrolled ? '#CC5500' : 'white',
           color: scrolled ? 'white' : '#F47B20',
-          fontWeight: '700',
-          fontSize: '0.88rem',
+          fontWeight: '800',
+          fontSize: '0.82rem',
           border: 'none',
           boxShadow: scrolled ? '0 4px 14px rgba(204,85,0,0.35)' : '0 4px 12px rgba(0,0,0,0.15)',
           cursor: 'pointer',

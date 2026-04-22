@@ -110,106 +110,106 @@ const Features = () => {
   ];
 
   return (
-    <section id="features" ref={sectionRef} className="container section-padding">
+    <section id="features" ref={sectionRef} className="container py-5 my-5">
       
       {/* Header */}
-      <div ref={headerRef} style={{ textAlign: 'center', marginBottom: '4.5rem', opacity: 0 }}>
-        <span className="badge">Platform</span>
-        <h2 style={{ marginBottom: '1rem' }}>
+      <div ref={headerRef} className="text-center mb-5" style={{ opacity: 0 }}>
+        <span className="badge mb-3">Platform</span>
+        <h2 className="display-6 fw-bold mb-3">
           Powerful Features for<br />Your Meal Prep Business
         </h2>
-        <p style={{ maxWidth: '560px', margin: '0 auto', fontSize: '1.05rem', color: 'var(--text-light)' }}>
+        <p className="mx-auto" style={{ maxWidth: '600px', color: 'var(--text-light)' }}>
           Tiffy provides an all-in-one platform to streamline your operations, optimize deliveries, and enhance the customer experience.
         </p>
       </div>
 
       {/* Feature Grid */}
-      <div style={{ marginBottom: '6rem' }}>
-        <div style={{ marginBottom: '2.5rem' }}>
-          <h3 style={{ marginBottom: '0.6rem' }}>Streamline Your Business Operations</h3>
+      <div className="mb-5 py-4">
+        <div className="mb-4">
+          <h3 className="fw-bold mb-2">Streamline Your Business Operations</h3>
           <p style={{ color: 'var(--text-light)' }}>Manage your entire business from a single, intuitive dashboard.</p>
         </div>
-        <div className="grid-3">
+        <div className="row g-4">
           {featureCards.map((card, i) => (
-            <div
-              key={i}
-              ref={el => cardsRef.current[i] = el}
-              className="card"
-              onMouseMove={e => handleCardMove(e, e.currentTarget)}
-              onMouseLeave={e => handleCardLeave(e.currentTarget)}
-              style={{ 
-                position: 'relative', overflow: 'hidden', opacity: 0,
-                background: 'var(--bg-elevated)', borderRadius: 20,
-              }}
-            >
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: card.gradient }} />
-              <div className={`feature-icon-wrapper`} style={{ background: 'var(--primary-light)', color: 'var(--primary)', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 12, marginBottom: '1.5rem' }}>
-                {card.icon}
+            <div key={i} className="col-12 col-md-4">
+              <div
+                ref={el => cardsRef.current[i] = el}
+                className="card h-100 border-0 p-4"
+                onMouseMove={e => handleCardMove(e, e.currentTarget)}
+                onMouseLeave={e => handleCardLeave(e.currentTarget)}
+                style={{ 
+                  position: 'relative', overflow: 'hidden', opacity: 0,
+                  background: 'var(--bg-elevated)', borderRadius: 20,
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.05)', transition: 'all 0.3s ease'
+                }}
+              >
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: card.gradient }} />
+                <div style={{ background: 'var(--primary-light)', color: 'var(--primary)', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 12, marginBottom: '1.5rem' }}>
+                  {card.icon}
+                </div>
+                <h4 className="fw-bold mb-3 h5">{card.title}</h4>
+                <p className="small mb-0" style={{ lineHeight: 1.6, color: 'var(--text-light)' }}>{card.desc}</p>
               </div>
-              <h4 style={{ fontWeight: 700, marginBottom: '0.8rem' }}>{card.title}</h4>
-              <p style={{ fontSize: '0.92rem', lineHeight: 1.6, color: 'var(--text-light)' }}>{card.desc}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Delivery Section */}
-      <div className="grid-2" style={{ alignItems: 'center' }}>
-        <div
-          ref={mapRef}
-          style={{
-            background: 'linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%)',
-            borderRadius: 24, height: 420, position: 'relative',
-            overflow: 'hidden', boxShadow: 'var(--shadow-lg)',
-            border: '1px solid var(--border-light)', opacity: 0,
-          }}
-        >
-          {loading ? (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '1rem' }}>
-              <div className="spinner-border text-primary" style={{ width: 32, height: 32 }} />
-              <p style={{ color: 'var(--text-light)', fontWeight: 600 }}>Locating delivery zone…</p>
-            </div>
-          ) : (
-            <AnimatePresence>
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ width: '100%', height: '100%', display: 'flex' }}>
-                <iframe title="Map" width="100%" height="100%" frameBorder="0" src={getMapUrl()} style={{ border: 'none', filter: 'grayscale(0.4) contrast(1.1)', display: 'block' }} />
-                <div style={{ position: 'absolute', top: 16, left: 16, background: 'white', padding: '10px 14px', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: 8, zIndex: 10 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 0 4px rgba(16,185,129,0.2)' }} />
-                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-dark)' }}>Optimized Delivery Zone</span>
-                </div>
-                <div style={{ position: 'absolute', bottom: 16, right: 16, background: '#0F1117', color: 'white', padding: '12px 18px', borderRadius: 14, boxShadow: '0 8px 24px rgba(0,0,0,0.2)', zIndex: 10 }}>
-                  <div style={{ opacity: 0.55, fontSize: '0.72rem', marginBottom: 3, letterSpacing: '0.04em', textTransform: 'uppercase' }}>ETA</div>
-                  <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>24 – 38 min</div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          )}
+      {/* Delivery Grid */}
+      <div className="row align-items-center g-5 py-5">
+        <div className="col-12 col-lg-6">
+          <div
+            ref={mapRef}
+            style={{
+              background: 'linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%)',
+              borderRadius: 24, height: 450, position: 'relative',
+              overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.1)',
+              border: '1px solid var(--border-light)', opacity: 0,
+            }}
+          >
+            {loading ? (
+              <div className="h-100 d-flex flex-column align-items-center justify-content-center gap-3">
+                <div className="spinner-border text-primary" role="status"></div>
+                <p className="fw-bold" style={{ color: 'var(--text-light)' }}>Locating delivery zone…</p>
+              </div>
+            ) : (
+              <AnimatePresence>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ width: '100%', height: '100%', display: 'flex' }}>
+                  <iframe title="Map" width="100%" height="100%" frameBorder="0" src={getMapUrl()} style={{ border: 'none', filter: 'grayscale(0.4) contrast(1.1)', display: 'block' }} />
+                  <div style={{ position: 'absolute', top: 20, left: 20, background: 'white', padding: '12px 16px', borderRadius: 14, boxShadow: '0 4px 20px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 10 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 0 4px rgba(16,185,129,0.2)' }} />
+                    <span className="fw-bold small" style={{ color: 'var(--text-dark)' }}>Optimized Delivery Zone</span>
+                  </div>
+                  <div style={{ position: 'absolute', bottom: 20, right: 20, background: '#0F1117', color: 'white', padding: '14px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.2)', zIndex: 10 }}>
+                    <div style={{ opacity: 0.6, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>ETA</div>
+                    <div className="fw-bold h5 mb-0">24 – 38 min</div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            )}
+          </div>
         </div>
-
-        <div ref={deliveryRef}>
-          <span className="badge">Smart Routing</span>
-          <h3 style={{ marginBottom: '0.75rem' }}>Optimize Your Delivery Operations</h3>
-          <p style={{ marginBottom: '2.5rem', fontSize: '1.02rem', color: 'var(--text-light)' }}>Ensure timely and efficient deliveries with intelligent routing and tracking.</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        
+        <div className="col-12 col-lg-6" ref={deliveryRef}>
+          <span className="badge mb-3">Smart Routing</span>
+          <h3 className="display-6 fw-bold mb-3">Optimize Your Delivery Operations</h3>
+          <p className="mb-4 fs-5" style={{ color: 'var(--text-light)' }}>Ensure timely and efficient deliveries with intelligent routing and tracking.</p>
+          <div className="d-flex flex-column gap-3">
             {deliveryItems.map((item, i) => (
               <div
                 key={i}
                 ref={el => deliveryItemsRef.current[i] = el}
-                style={{
-                  display: 'flex', gap: '1rem', alignItems: 'flex-start',
-                  padding: '1.1rem 1.25rem', borderRadius: 14,
-                  background: 'var(--bg-card)', border: '1px solid var(--border-light)',
-                  boxShadow: 'var(--shadow-sm)', cursor: 'default', opacity: 0,
-                }}
-                onMouseEnter={e => gsap.to(e.currentTarget, { x: 6, duration: 0.3 })}
+                className="d-flex gap-3 p-4 rounded-4 border"
+                style={{ opacity: 0, boxShadow: '0 4px 15px rgba(0,0,0,0.03)', transition: 'all 0.3s ease', background: 'var(--bg-card)' }}
+                onMouseEnter={e => gsap.to(e.currentTarget, { x: 8, duration: 0.3 })}
                 onMouseLeave={e => gsap.to(e.currentTarget, { x: 0, duration: 0.4 })}
               >
-                <div style={{ color: 'var(--primary)', flexShrink: 0, width: 38, height: 38, borderRadius: 10, background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="flex-shrink-0 d-flex align-items-center justify-content-center rounded-3" style={{ width: 44, height: 44, background: 'var(--primary-light)', color: 'var(--primary)' }}>
                   {item.icon}
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '1rem', marginBottom: '0.2rem', fontWeight: 700 }}>{item.title}</h4>
-                  <p style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>{item.desc}</p>
+                  <h4 className="h6 fw-bold mb-1">{item.title}</h4>
+                  <p className="small mb-0" style={{ color: 'var(--text-light)' }}>{item.desc}</p>
                 </div>
               </div>
             ))}

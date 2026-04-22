@@ -92,47 +92,73 @@ const Particles = () => {
 
 const ParticleCTA = () => {
   return (
-    <div style={{ position: 'relative', width: '100%', height: '850px', backgroundColor: '#F8F8FC', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}>
+    <section className="position-relative w-100 overflow-hidden" style={{ minHeight: '850px', backgroundColor: '#F8F8FC' }}>
+      <div className="position-absolute top-0 left-0 w-100 h-100" style={{ zIndex: 1 }}>
         <Canvas camera={{ position: [0, 0, 15], fov: 40 }}><Particles /></Canvas>
       </div>
 
-      <div className="container" style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingTop: '6rem', paddingBottom: '2rem', pointerEvents: 'none' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 2fr', gap: '2rem' }}>
-          <div style={{ pointerEvents: 'auto', color: 'var(--text-dark)' }}>
-            <h3 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '2rem', letterSpacing: '-0.04em' }}>tiffy</h3>
-            <p style={{ lineHeight: 1.8, fontSize: '1.05rem', fontWeight: 500 }}>Suite 2, 9 Marsh Street<br />Bristol, BS1 4AA<br />United Kingdom</p>
+      <div className="container position-relative py-5 h-100 d-flex flex-column justify-content-between" style={{ zIndex: 2, pointerEvents: 'none', minHeight: '850px' }}>
+        <div className="row g-5 pt-5">
+          {/* Column 1: Brand/Address */}
+          <div className="col-12 col-md-4 col-lg-3" style={{ pointerEvents: 'auto', color: 'var(--text-dark)' }}>
+            <h3 className="h2 fw-bold mb-4" style={{ letterSpacing: '-0.04em' }}>tiffy</h3>
+            <p className="lh-lg fw-medium mb-0">Suite 2, 9 Marsh Street<br />Bristol, BS1 4AA<br />United Kingdom</p>
           </div>
 
-          <div style={{ pointerEvents: 'auto', color: 'var(--text-dark)', display: 'flex', flexDirection: 'column', gap: '2.5rem', paddingTop: '4rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '1.05rem', fontWeight: 500 }}>
-              <p style={{ cursor: 'pointer' }}>Twitter / X</p><p style={{ cursor: 'pointer' }}>Instagram</p><p style={{ cursor: 'pointer' }}>LinkedIn</p>
+          {/* Column 2: Social/Links */}
+          <div className="col-12 col-md-4 col-lg-3" style={{ pointerEvents: 'auto', color: 'var(--text-dark)' }}>
+            <div className="d-flex flex-column gap-3 mb-5">
+              <p className="fw-bold mb-0 cursor-pointer">Twitter / X</p>
+              <p className="fw-bold mb-0 cursor-pointer">Instagram</p>
+              <p className="fw-bold mb-0 cursor-pointer">LinkedIn</p>
             </div>
-            <div><p style={{ color: 'var(--text-light)', marginBottom: '0.25rem', fontSize: '0.9rem' }}>General enquires</p><p style={{ fontSize: '1.05rem', fontWeight: 500, cursor: 'pointer' }}>hello@tiffy.io</p></div>
+            <div>
+              <p className="small mb-1" style={{ color: 'var(--text-light)' }}>General enquires</p>
+              <p className="fw-bold cursor-pointer h5">hello@tiffy.io</p>
+            </div>
           </div>
 
-          <div style={{ pointerEvents: 'auto' }}>
-            <div style={{ background: 'rgba(248, 248, 252, 0.6)', backdropFilter: 'blur(12px)', padding: '3rem', borderRadius: 24, border: '1px solid rgba(255, 255, 255, 0.4)', boxShadow: 'var(--shadow-lg)' }}>
-              <h2 style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--text-dark)', lineHeight: 1.1, letterSpacing: '-0.04em', marginBottom: '2rem' }}>Contact Us</h2>
-              <form style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={e => e.preventDefault()}>
-                <input type="text" placeholder="Your Name" style={{ width: '100%', padding: '1rem', borderRadius: 12, border: '1px solid rgba(255,255,255,0.8)', background: 'white', outline: 'none' }} required />
-                <input type="email" placeholder="you@example.com" style={{ width: '100%', padding: '1rem', borderRadius: 12, border: '1px solid rgba(255,255,255,0.8)', background: 'white', outline: 'none' }} required />
-                <textarea placeholder="Message..." rows="3" style={{ width: '100%', padding: '1rem', borderRadius: 12, border: '1px solid rgba(255,255,255,0.8)', background: 'white', outline: 'none', resize: 'none' }} required></textarea>
-                <button type="submit" className="btn-primary" style={{ width: '100%', padding: '1rem' }}>Send Message</button>
+          {/* Column 3: Contact Form */}
+          <div className="col-12 col-md-8 col-lg-6 ms-auto" style={{ pointerEvents: 'auto' }}>
+            <div className="p-4 p-md-5 rounded-5 shadow-lg" style={{ background: 'rgba(255, 255, 255, 0.55)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.4)' }}>
+              <h2 className="display-4 mb-4" style={{ letterSpacing: '-0.04em', fontWeight: 800, color: 'var(--text-dark)' }}>Contact Us</h2>
+              <form className="row g-3" onSubmit={(e) => e.preventDefault()}>
+                <div className="col-12 col-sm-6">
+                  <label className="form-label fw-bold small" style={{ color: 'var(--text-dark)' }}>Name</label>
+                  <input type="text" className="form-control form-control-lg border-0 bg-white rounded-4 shadow-sm" style={{ fontSize: '1rem' }} placeholder="Your Name" required />
+                </div>
+                <div className="col-12 col-sm-6">
+                  <label className="form-label fw-bold small" style={{ color: 'var(--text-dark)' }}>Email</label>
+                  <input type="email" className="form-control form-control-lg border-0 bg-white rounded-4 shadow-sm" style={{ fontSize: '1rem' }} placeholder="you@example.com" required />
+                </div>
+                <div className="col-12">
+                  <label className="form-label fw-bold small" style={{ color: 'var(--text-dark)' }}>Message</label>
+                  <textarea className="form-control form-control-lg border-0 bg-white rounded-4 shadow-sm" rows="3" style={{ fontSize: '1rem' }} placeholder="Tell us about your business..." required></textarea>
+                </div>
+                <div className="col-12 mt-4">
+                  <button type="submit" className="btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm" style={{ fontSize: '1.1rem' }}>
+                    Send Message
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
 
-        <div style={{ pointerEvents: 'auto', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(26, 29, 43, 0.1)', paddingTop: '1.5rem', color: 'var(--text-dark)', fontSize: '0.9rem', fontWeight: 500 }}>
-          <p>©2026 TIFFY Creative Studio | labs.tiffy.io</p>
-          <div style={{ display: 'flex', gap: '2rem' }}>
-            <p>Built with ❤️</p>
-            <div onClick={() => window.scrollTo({top:0, behavior:'smooth'})} style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--text-dark)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>↑</div>
+        {/* Footer Bottom */}
+        <div className="row mt-5 pt-4 border-top border-dark border-opacity-10 align-items-center" style={{ pointerEvents: 'auto', color: 'var(--text-dark)' }}>
+          <div className="col-12 col-md-6 mb-3 mb-md-0">
+            <p className="small fw-medium mb-0">©2026 TIFFY Creative Studio | labs.tiffy.io</p>
+          </div>
+          <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center gap-4">
+            <p className="small fw-medium mb-0">Built with ❤️</p>
+            <div onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center cursor-pointer" style={{ width: 44, height: 44 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="18 15 12 9 6 15" /></svg>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
