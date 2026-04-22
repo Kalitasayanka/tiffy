@@ -38,36 +38,36 @@ const Features = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(headerRef.current,
-        { opacity: 0, y: 50 },
+        { opacity: 0, y: 30 },
         {
-          opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-          scrollTrigger: { trigger: headerRef.current, start: 'top 80%' }
+          opacity: 1, y: 0, duration: 1.2, ease: 'expo.out',
+          scrollTrigger: { trigger: headerRef.current, start: 'top 85%' }
         }
       );
 
       gsap.fromTo(cardsRef.current,
-        { opacity: 0, y: 60, rotateY: -15 },
+        { opacity: 0, y: 40 },
         {
-          opacity: 1, y: 0, rotateY: 0,
-          duration: 0.7, stagger: 0.15, ease: 'back.out(1.4)',
-          scrollTrigger: { trigger: cardsRef.current[0], start: 'top 80%' }
+          opacity: 1, y: 0,
+          duration: 1, stagger: 0.12, ease: 'expo.out',
+          scrollTrigger: { trigger: cardsRef.current[0], start: 'top 85%' }
         }
       );
 
       gsap.fromTo(mapRef.current,
-        { opacity: 0, x: -60, scale: 0.95 },
+        { opacity: 0, scale: 0.98, filter: 'blur(10px)' },
         {
-          opacity: 1, x: 0, scale: 1, duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: mapRef.current, start: 'top 75%' }
+          opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out',
+          scrollTrigger: { trigger: mapRef.current, start: 'top 85%' }
         }
       );
 
       gsap.fromTo(deliveryItemsRef.current,
-        { opacity: 0, x: 40 },
+        { opacity: 0, x: 20 },
         {
           opacity: 1, x: 0,
-          duration: 0.6, stagger: 0.12, ease: 'power3.out',
-          scrollTrigger: { trigger: deliveryRef.current, start: 'top 75%' }
+          duration: 0.8, stagger: 0.1, ease: 'expo.out',
+          scrollTrigger: { trigger: deliveryRef.current, start: 'top 85%' }
         }
       );
     }, sectionRef);

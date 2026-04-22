@@ -24,31 +24,31 @@ const FAQ = () => {
     const ctx = gsap.context(() => {
       // Entrance animations
       gsap.fromTo(headerRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-          scrollTrigger: { trigger: headerRef.current, start: 'top 80%' } }
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1.2, ease: 'expo.out',
+          scrollTrigger: { trigger: headerRef.current, start: 'top 85%' } }
       );
 
       gsap.fromTo(catRef.current,
-        { opacity: 0, x: -30 },
-        { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out',
-          scrollTrigger: { trigger: catRef.current, start: 'top 80%' } }
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 1, ease: 'expo.out',
+          scrollTrigger: { trigger: catRef.current, start: 'top 85%' } }
       );
 
       gsap.fromTo(itemRefs.current,
-        { opacity: 0, x: 40 },
+        { opacity: 0, y: 20 },
         {
-          opacity: 1, x: 0,
-          duration: 0.55, stagger: 0.1, ease: 'power3.out',
-          scrollTrigger: { trigger: itemRefs.current[0], start: 'top 80%' }
+          opacity: 1, y: 0,
+          duration: 0.8, stagger: 0.1, ease: 'expo.out',
+          scrollTrigger: { trigger: itemRefs.current[0], start: 'top 85%' }
         }
       );
 
       gsap.fromTo(ctaRef.current,
-        { opacity: 0, y: 50, scale: 0.97 },
+        { opacity: 0, y: 40, scale: 0.98 },
         {
-          opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.4)',
-          scrollTrigger: { trigger: ctaRef.current, start: 'top 85%' }
+          opacity: 1, y: 0, scale: 1, duration: 1, ease: 'expo.out',
+          scrollTrigger: { trigger: ctaRef.current, start: 'top 90%' }
         }
       );
     }, sectionRef);
@@ -61,9 +61,9 @@ const FAQ = () => {
     contentRefs.current.forEach((ref, i) => {
       if (!ref) return;
       if (openIndex === i) {
-        gsap.to(ref, { height: 'auto', opacity: 1, marginTop: '0.85rem', duration: 0.4, ease: 'power2.out' });
+        gsap.to(ref, { height: 'auto', opacity: 1, marginTop: '1rem', duration: 0.5, ease: 'expo.out' });
       } else {
-        gsap.to(ref, { height: 0, opacity: 0, marginTop: 0, duration: 0.35, ease: 'power2.inOut' });
+        gsap.to(ref, { height: 0, opacity: 0, marginTop: 0, duration: 0.45, ease: 'expo.inOut' });
       }
     });
   }, [openIndex]);
