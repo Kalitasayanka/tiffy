@@ -115,7 +115,7 @@ const Features = () => {
         }
       );
 
-      // Delivery items with staggered slide and bounce
+
       gsap.fromTo(deliveryItemsRef.current,
         {
           opacity: 0,
@@ -138,7 +138,7 @@ const Features = () => {
         }
       );
 
-      // Add scroll-triggered parallax to map (respecting reduced motion)
+      // Add scroll-triggered parallax to map
       if (!prefersReducedMotion) {
         gsap.to(mapRef.current, {
           y: -30,

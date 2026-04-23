@@ -77,8 +77,8 @@ export const TiffinBox = () => {
   );
 };
 
-// --- Food Particle Simulation ---
-const FOOD_COUNT = 300; // per shape, so total 1200 chunks
+
+const FOOD_COUNT = 300;
 
 const createFoodParticles = (colorHex) => {
   const positions = new Float32Array(FOOD_COUNT * 3);
@@ -89,7 +89,7 @@ const createFoodParticles = (colorHex) => {
   const baseColor = new THREE.Color(colorHex);
 
   for (let i = 0; i < FOOD_COUNT; i++) {
-    // Spread in a large volume behind and around the tiffin box
+
     const x = (Math.random() - 0.5) * 40;
     const y = (Math.random() - 0.5) * 30;
     const z = (Math.random() - 0.5) * 15 - 5; // offset back
@@ -124,7 +124,7 @@ const FoodSwarm = ({ geometry, data, materialProps }) => {
   useFrame(() => {
     if (!meshRef.current) return;
 
-    // Convert pointer to world coordinates at z=0 approx
+    // Convert pointer to world coordinates
     const vec = new THREE.Vector3(pointer.x, pointer.y, 0.5);
     vec.unproject(camera);
     const dir = vec.sub(camera.position).normalize();

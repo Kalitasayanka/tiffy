@@ -28,9 +28,9 @@ const Hero = () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const ctx = gsap.context(() => {
-      // If user prefers reduced motion, skip complex animations
+
       if (prefersReducedMotion) {
-        // Simple fade-in for accessibility
+
         gsap.fromTo([badgeRef.current, headRef.current, subRef.current, ctaRef.current, socialRef.current, dashRef.current, chatRef.current],
           { opacity: 0 },
           { opacity: 1, duration: 0.8, stagger: 0.1 }
@@ -38,7 +38,7 @@ const Hero = () => {
         return;
       }
 
-      // Master timeline with smoother easing
+
       const tl = gsap.timeline({
         delay: 0.2,
         defaults: {
@@ -47,13 +47,13 @@ const Hero = () => {
         }
       });
 
-      // Badge with bounce effect
+
       tl.fromTo(badgeRef.current,
         { opacity: 0, y: -30, scale: 0.9, rotation: -5 },
         { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 1.2, ease: 'back.out(1.7)' }
       );
 
-      // Headline with improved stagger and clipping
+
       const lines = headRef.current.querySelectorAll('.anim-line');
       tl.fromTo(lines,
         {
@@ -72,14 +72,14 @@ const Hero = () => {
         '-=0.7'
       );
 
-      // Subtitle with fade and slight scale
+
       tl.fromTo(subRef.current,
         { opacity: 0, y: 30, scale: 0.98 },
         { opacity: 1, y: 0, scale: 1, duration: 1.3, ease: 'expo.out' },
         '-=1.0'
       );
 
-      // CTA buttons with enhanced stagger and bounce
+
       tl.fromTo(
         ctaRef.current?.querySelectorAll('button'),
         { opacity: 0, y: 30, scale: 0.9 },
@@ -94,14 +94,14 @@ const Hero = () => {
         '-=0.8'
       );
 
-      // Social proof with fade and slide
+
       tl.fromTo(socialRef.current,
         { opacity: 0, y: 20, filter: 'blur(10px)' },
         { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1 },
         '-=0.5'
       );
 
-      // Dashboard mockup with 3D perspective and parallax
+
       tl.fromTo(dashRef.current,
         {
           opacity: 0,
@@ -123,7 +123,7 @@ const Hero = () => {
         '-=0.6'
       );
 
-      // Chat bubble with playful entrance
+
       tl.fromTo(chatRef.current,
         { opacity: 0, scale: 0, rotation: -180, x: -50 },
         {
@@ -137,7 +137,7 @@ const Hero = () => {
         '-=1.0'
       );
 
-      // Enhanced blob animations with parallax on scroll - only if not reduced motion
+
       if (!prefersReducedMotion) {
         gsap.to(blob1Ref.current, {
           scale: 1.2,
@@ -183,7 +183,7 @@ const Hero = () => {
         });
       }
 
-      // Add subtle floating animation to CTA buttons on hover (always enabled for UX)
+
       const buttons = ctaRef.current?.querySelectorAll('button');
       if (buttons) {
         buttons.forEach(btn => {
