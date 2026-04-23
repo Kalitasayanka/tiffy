@@ -1,27 +1,73 @@
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
-const COUNT_PER_SHAPE = 2000; 
+// Responsive particle parameters
+const useResponsiveParticleParams = () => {
+  const [params, setParams] = useState({
+    countPerShape: 1500,
+    spreadX: 60,
+    spreadY: 40,
+    cameraFov: 40,
+    cameraZ: 15,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setParams({
+          countPerShape: 800,
+          spreadX: 30,
+          spreadY: 25,
+          cameraFov: 50,
+          cameraZ: 12,
+        });
+      } else if (width < 1024) {
+        setParams({
+          countPerShape: 1200,
+          spreadX: 45,
+          spreadY: 35,
+          cameraFov: 45,
+          cameraZ: 14,
+        });
+      } else {
+        setParams({
+          countPerShape: 2000,
+          spreadX: 60,
+          spreadY: 40,
+          cameraFov: 40,
+          cameraZ: 15,
+        });
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return params;
+};
+
 const DAMPING = 0.95;
 const MOUSE_FORCE = 0.07;
 const RETURN_FORCE = 0.02;
 
-const createParticles = () => {
-  const positions = new Float32Array(COUNT_PER_SHAPE * 3);
-  const originalPositions = new Float32Array(COUNT_PER_SHAPE * 3);
-  const velocities = new Float32Array(COUNT_PER_SHAPE * 3);
-  const colors = new Float32Array(COUNT_PER_SHAPE * 3);
-  const scales = new Float32Array(COUNT_PER_SHAPE * 3);
+const createParticles = (countPerShape, spreadX, spreadY) => {
+  const positions = new Float32Array(countPerShape * 3);
+  const originalPositions = new Float32Array(countPerShape * 3);
+  const velocities = new Float32Array(countPerShape * 3);
+  const colors = new Float32Array(countPerShape * 3);
+  const scales = new Float32Array(countPerShape * 3);
 
   const themeColors = [
-    new THREE.Color('#F47B20'), new THREE.Color('#CC5500'), new THREE.Color('#FF9F43'), 
-    new THREE.Color('#E8500A'), new THREE.Color('#FFB347'), new THREE.Color('#E26D32'), 
+    new THREE.Color('#F47B20'), new THREE.Color('#CC5500'), new THREE.Color('#FF9F43'),
+    new THREE.Color('#E8500A'), new THREE.Color('#FFB347'), new THREE.Color('#E26D32'),
   ];
 
-  for (let i = 0; i < COUNT_PER_SHAPE; i++) {
-    const x = (Math.random() - 0.5) * 60;
-    const y = (Math.random() - 0.5) * 40;
+  for (let i = 0; i < countPerShape; i++) {
+    const x = (Math.random() - 0.5) * spreadX;
+    const y = (Math.random() - 0.5) * spreadY;
     const z = (Math.random() - 0.5) * 2;
     positions[i * 3] = x; positions[i * 3 + 1] = y; positions[i * 3 + 2] = z;
     originalPositions[i * 3] = x; originalPositions[i * 3 + 1] = y; originalPositions[i * 3 + 2] = z;
@@ -33,7 +79,7 @@ const createParticles = () => {
   return { positions, originalPositions, velocities, colors, scales };
 };
 
-const FluidSwarm = ({ geometry, data }) => {
+const FluidSwarm = ({ geometry, data, count }) => {
   const meshRef = useRef();
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const { viewport, pointer } = useThree();
@@ -53,15 +99,15 @@ const FluidSwarm = ({ geometry, data }) => {
     const mouseVelY = mouseY - lastMouse.y;
     lastMouse.set(mouseX, mouseY);
 
-    for (let i = 0; i < COUNT_PER_SHAPE; i++) {
+    for (let i = 0; i < count; i++) {
       const idx3 = i * 3;
       let px = data.positions[idx3]; let py = data.positions[idx3 + 1]; let pz = data.positions[idx3 + 2];
       let vx = data.velocities[idx3]; let vy = data.velocities[idx3 + 1]; let vz = data.velocities[idx3 + 2];
       const dx = mouseX - px; const dy = mouseY - py;
       const distSq = dx * dx + dy * dy;
-      if (distSq < 36) {
+      if (distSq < 16) {
         const dist = Math.sqrt(distSq);
-        const force = (6 - dist) / 6;
+        const force = (4 - dist) / 4;
         vx -= (dx / dist) * force * MOUSE_FORCE; vy -= (dy / dist) * force * MOUSE_FORCE;
         vx += mouseVelX * force * 0.08; vy += mouseVelY * force * 0.08;
       }
@@ -76,29 +122,55 @@ const FluidSwarm = ({ geometry, data }) => {
     meshRef.current.instanceMatrix.needsUpdate = true;
   });
   return (
-    <instancedMesh ref={meshRef} args={[geometry, null, COUNT_PER_SHAPE]}>
+    <instancedMesh ref={meshRef} args={[geometry, null, count]}>
       <meshBasicMaterial><instancedBufferAttribute attach="attributes-color" args={[data.colors, 3]} /></meshBasicMaterial>
     </instancedMesh>
   );
 };
 
 const Particles = () => {
-  const dataBox = useMemo(createParticles, []);
-  const dataSphere = useMemo(createParticles, []);
+  const params = useResponsiveParticleParams();
+  const dataBox = useMemo(() => createParticles(params.countPerShape, params.spreadX, params.spreadY), [params]);
+  const dataSphere = useMemo(() => createParticles(params.countPerShape, params.spreadX, params.spreadY), [params]);
   const geoBox = useMemo(() => new THREE.BoxGeometry(1, 1, 1), []);
   const geoSphere = useMemo(() => new THREE.CircleGeometry(0.6, 16), []);
-  return <group><FluidSwarm geometry={geoBox} data={dataBox} /><FluidSwarm geometry={geoSphere} data={dataSphere} /></group>;
+  return (
+    <group>
+      <FluidSwarm geometry={geoBox} data={dataBox} count={params.countPerShape} />
+      <FluidSwarm geometry={geoSphere} data={dataSphere} count={params.countPerShape} />
+    </group>
+  );
 };
 
 const ParticleCTA = () => {
+  const params = useResponsiveParticleParams();
+  const [minHeight, setMinHeight] = useState('850px');
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setMinHeight('600px');
+      } else if (width < 1024) {
+        setMinHeight('750px');
+      } else {
+        setMinHeight('850px');
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <section className="position-relative w-100 overflow-hidden" style={{ minHeight: '850px', backgroundColor: '#F8F8FC' }}>
+    <section ref={sectionRef} className="position-relative w-100 overflow-hidden" style={{ minHeight, backgroundColor: '#F8F8FC' }}>
       <div className="position-absolute top-0 left-0 w-100 h-100" style={{ zIndex: 1 }}>
-        <Canvas camera={{ position: [0, 0, 15], fov: 40 }}><Particles /></Canvas>
+        <Canvas eventSource={sectionRef} eventPrefix="client" camera={{ position: [0, 0, params.cameraZ], fov: params.cameraFov }}><Particles /></Canvas>
       </div>
 
-      <div className="container position-relative py-5 h-100 d-flex flex-column justify-content-between" style={{ zIndex: 2, pointerEvents: 'none', minHeight: '850px' }}>
-        <div className="row g-5 pt-5">
+      <div className="container position-relative py-5 h-100 d-flex flex-column justify-content-between" style={{ zIndex: 2, pointerEvents: 'none', minHeight }}>
+        <div className="row g-4 g-md-5 pt-4 pt-md-5">
           {/* Column 1: Brand/Address */}
           <div className="col-12 col-md-4 col-lg-3" style={{ pointerEvents: 'auto', color: 'var(--text-dark)' }}>
             <h3 className="h2 fw-bold mb-4" style={{ letterSpacing: '-0.04em' }}>tiffy</h3>
@@ -152,7 +224,7 @@ const ParticleCTA = () => {
           </div>
           <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center gap-4">
             <p className="small fw-medium mb-0">Built with ❤️</p>
-            <div onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center cursor-pointer" style={{ width: 44, height: 44 }}>
+            <div onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center cursor-pointer" style={{ width: 44, height: 44 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="18 15 12 9 6 15" /></svg>
             </div>
           </div>
