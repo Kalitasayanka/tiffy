@@ -1,5 +1,7 @@
 # Tiffy - Tiffin Management Software
 
+> **Disclaimer:** This project is a replica of tiffy.io built by **Sayanka** for educational purposes.
+
 Tiffy is an all-in-one platform built specifically for modern meal prep and tiffin delivery businesses. It features a React frontend and an Express/MySQL backend with real-time WebSocket updates.
 
 ## ⚠️ Important Deployment Notice for GitHub Pages
