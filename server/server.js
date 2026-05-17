@@ -168,17 +168,19 @@ app.post('/api/contact', authenticateToken, async (req, res) => {
 });
 
 // POST /api/track-visit
+// Tracks every unique browser session anonymously. sessionId is generated client-side.
 app.post('/api/track-visit', async (req, res) => {
-  const { userId } = req.body;
-  if (!userId) return res.status(400).json({ error: 'User ID required' });
+  const { sessionId } = req.body;
+  if (!sessionId) return res.status(400).json({ error: 'Session ID required' });
   try {
-    const [rows] = await pool.query('SELECT visit_date FROM user_activity_logs WHERE user_id = ? ORDER BY visit_date DESC LIMIT 1', [userId]);
     const now = new Date();
-    if (rows.length > 0) {
-      const diffInDays = (now - new Date(rows[0].visit_date)) / (1000 * 60 * 60 * 24);
-      if (diffInDays < 7) return res.json({ success: true, ignored: true });
-    }
-    await pool.query('INSERT INTO user_activity_logs (user_id, visit_date) VALUES (?, ?)', [userId, now]);
+    // Each session only tracked once per day max to avoid reload spam
+    const [rows] = await pool.query(
+      'SELECT id FROM user_activity_logs WHERE user_id = ? AND DATE(visit_date) = CURDATE()',
+      [sessionId]
+    );
+    if (rows.length > 0) return res.json({ success: true, ignored: true });
+    await pool.query('INSERT INTO user_activity_logs (user_id, visit_date) VALUES (?, ?)', [sessionId, now]);
     res.json({ success: true, recorded: true });
   } catch (error) {
     console.error('Error tracking visit:', error);
@@ -232,8 +234,8 @@ app.get('/api/admin/analytics', authenticateAdmin, async (req, res) => {
     `, [year]);
     const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     res.json(monthNames.map((name, i) => {
-      const found = rows.find(r => r.monthNum === i + 1);
-      return { date: name, visits: found ? found.visits : 0 };
+      const found = rows.find(r => Number(r.monthNum) === i + 1);
+      return { date: name, visits: found ? Number(found.visits) : 0 };
     }));
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -244,11 +246,11 @@ app.get('/api/admin/analytics', authenticateAdmin, async (req, res) => {
 app.get('/api/admin/retention', authenticateAdmin, async (req, res) => {
   try {
     const year = parseInt(req.query.year) || new Date().getFullYear();
-    const [logs] = await pool.query('SELECT user_id, visit_date FROM user_activity_logs');
+    const [logs] = await pool.query('SELECT user_id, visit_date FROM user_activity_logs ORDER BY visit_date ASC');
+    // Find each session's first-ever visit date
     const firstVisits = {};
     logs.forEach(log => {
-      const d = new Date(log.visit_date);
-      if (!firstVisits[log.user_id] || d < firstVisits[log.user_id]) firstVisits[log.user_id] = d;
+      if (!firstVisits[log.user_id]) firstVisits[log.user_id] = new Date(log.visit_date);
     });
     const monthlyData = {};
     for (let i = 1; i <= 12; i++) monthlyData[i] = { total: new Set(), returning: new Set() };
@@ -257,6 +259,7 @@ app.get('/api/admin/retention', authenticateAdmin, async (req, res) => {
       if (d.getFullYear() === year) {
         const m = d.getMonth() + 1;
         monthlyData[m].total.add(log.user_id);
+        // If they visited before this month, they are returning
         if (firstVisits[log.user_id] < new Date(year, m - 1, 1)) monthlyData[m].returning.add(log.user_id);
       }
     });

@@ -7,24 +7,25 @@ import StoryScroll from '../components/StoryScroll';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import ParticleCTA from '../components/ParticleCTA';
 import AuthModal from '../components/AuthModal';
-import { useAuth } from '../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Landing = () => {
   useSmoothScroll();
-  const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) return; // Only track authenticated users for active metrics
-    
-    // Track active user session quietly in the background
-    fetch(`${API_URL}/api/track-visit`, { 
+    // Generate a unique session ID per browser session and track it
+    let sessionId = sessionStorage.getItem('tiffy_session_id');
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      sessionStorage.setItem('tiffy_session_id', sessionId);
+    }
+    fetch(`${API_URL}/api/track-visit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: user.id })
+      body: JSON.stringify({ sessionId })
     }).catch(e => console.error('Failed to track visit', e));
-  }, [user]);
+  }, []);
 
   return (
     <>
