@@ -38,6 +38,11 @@ const Landing = () => {
       <div id="cta">
         <ParticleCTA />
       </div>
+      <footer className="text-center py-4" style={{ background: 'var(--bg-card)', borderTop: '1px solid var(--border-light)' }}>
+        <p className="small mb-0" style={{ color: 'var(--text-light)' }}>
+          <strong>Disclaimer:</strong> This project is a replica of <a href="https://tiffy.io" target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 'bold' }}>tiffy.io</a> built by <strong>Sayanka</strong>.
+        </p>
+      </footer>
       <AuthModal />
     </>
   );
