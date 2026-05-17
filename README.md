@@ -48,14 +48,6 @@ Alternatively, if you are on Windows, you can just double-click `launch-tiffy.ba
 
 ---
 
-## 🔐 Production Admin Credentials
-The database has been pre-configured with a production admin account. You can log into the `/admin` dashboard using:
-
-- **Username:** `sayanka`
-- **Password:** `Sayanka@2006`
-
----
-
 ## 🚀 Deploying Frontend to GitHub Pages
 
 If you want to deploy just the visual frontend to GitHub Pages:
