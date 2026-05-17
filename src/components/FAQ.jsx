@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { io } from 'socket.io-client';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const faqs = [
+const initialFaqs = [
   { question: 'What is tiffin management software?', answer: 'Tiffin management software is a digital solution designed to help tiffin service providers manage their daily operations. This includes tracking customer subscriptions, planning menus, and managing deliveries.' },
   { question: 'What is Tiffy?', answer: "Tiffy is an all-in-one platform built specifically for modern meal prep and tiffin delivery businesses. It helps you automate your daily operations from the kitchen to the customer's doorstep." },
   { question: 'Is it easy to use?', answer: 'Yes! Tiffy is designed with a very intuitive, modern user interface that anyone can quickly learn and use, whether they are in the kitchen or the back office.' },
@@ -12,13 +15,41 @@ const faqs = [
 ];
 
 const FAQ = () => {
+  const [activeCategory, setActiveCategory] = useState('General');
+  const [faqs, setFaqs] = useState(initialFaqs);
   const [openIndex, setOpenIndex] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const itemRefs = useRef([]);
   const contentRefs = useRef([]);
   const ctaRef = useRef(null);
   const catRef = useRef(null);
+  const listRef = useRef(null);
+
+  useEffect(() => {
+    const handleWheel = (e) => {
+      if (!listRef.current) return;
+      const { scrollTop, scrollHeight, clientHeight } = listRef.current;
+      const isScrollable = scrollHeight > clientHeight;
+      if (isScrollable) {
+        const isAtTop = scrollTop === 0;
+        const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
+        if ((e.deltaY > 0 && !isAtBottom) || (e.deltaY < 0 && !isAtTop)) {
+          e.preventDefault();
+          gsap.to(listRef.current, {
+            scrollTop: listRef.current.scrollTop + e.deltaY * 2,
+            duration: 0.4,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        }
+      }
+    };
+    const section = sectionRef.current;
+    if (section) section.addEventListener('wheel', handleWheel, { passive: false });
+    return () => { if (section) section.removeEventListener('wheel', handleWheel); };
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -55,6 +86,37 @@ const FAQ = () => {
 
     return () => ctx.revert();
   }, []);
+
+  useEffect(() => {
+    const socket = io(`${API_URL}`);
+    socket.on('faqs_updated', () => {
+      setRefreshKey(prev => prev + 1);
+    });
+    return () => socket.disconnect();
+  }, []);
+
+  // Fetch dynamic FAQs based on active category
+  useEffect(() => {
+    fetch(`${API_URL}/api/faqs?category=${activeCategory}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setFaqs(data);
+          setOpenIndex(0); // Reset accordion when category changes
+          
+          // Small animation when list changes
+          setTimeout(() => {
+            gsap.fromTo(itemRefs.current.filter(Boolean),
+              { opacity: 0, y: 10 },
+              { opacity: 1, y: 0, duration: 0.5, stagger: 0.05, ease: 'power2.out', overwrite: 'auto' }
+            );
+          }, 50);
+        } else {
+          setFaqs([]);
+        }
+      })
+      .catch(err => console.error('Failed to load FAQs:', err));
+  }, [activeCategory, refreshKey]);
 
   // Handle accordion animation with GSAP
   useEffect(() => {
@@ -96,11 +158,13 @@ const FAQ = () => {
                   style={{ 
                     fontSize: '0.9rem', 
                     transition: 'all 0.2s ease',
-                    background: i === 0 ? 'var(--primary-light)' : 'transparent',
-                    color: i === 0 ? 'var(--primary)' : 'var(--text-light)',
-                    fontWeight: i === 0 ? 700 : 500
+                    background: cat === activeCategory ? 'var(--primary-light)' : 'transparent',
+                    color: cat === activeCategory ? 'var(--primary)' : 'var(--text-light)',
+                    fontWeight: cat === activeCategory ? 700 : 500
                   }}
-                  onClick={() => i === 0 ? setOpenIndex(0) : null}
+                  onClick={() => {
+                     setActiveCategory(cat);
+                  }}
                 >
                   {cat}
                 </button>
@@ -111,7 +175,7 @@ const FAQ = () => {
 
         {/* Accordion List */}
         <div className="col-12 col-md-8 col-lg-9">
-          <div className="d-flex flex-column gap-3">
+          <div ref={listRef} className="d-flex flex-column gap-3 pe-2" style={{ maxHeight: '450px', overflowY: 'auto' }}>
             {faqs.map((faq, index) => {
               const isOpen = openIndex === index;
               return (
@@ -168,10 +232,16 @@ const FAQ = () => {
             <p className="mb-0" style={{ color: 'var(--text-light)' }}>Our team is ready to help you optimize your tiffin service operations.</p>
           </div>
           <div className="col-12 col-md-5 d-flex gap-2 justify-content-center justify-content-md-end">
-            <button className="btn-primary">Contact Support</button>
+            <button 
+              className="btn-primary"
+              onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}
+            >
+              Contact Support
+            </button>
             <button 
               className="rounded-pill px-4 py-2 fw-bold"
               style={{ background: 'white', color: 'var(--text-dark)', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)' }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               View Docs
             </button>

@@ -1,27 +1,17 @@
 import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import FAQ from './components/FAQ';
-import StoryScroll from './components/StoryScroll';
-import { useSmoothScroll } from './hooks/useSmoothScroll';
-import ParticleCTA from './components/ParticleCTA';
+import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Landing from './pages/Landing';
+import Admin from './pages/Admin';
 
 function App() {
-  useSmoothScroll();
   return (
-    <>
-      <StoryScroll />
-      <Navbar />
-      <main>
-        <Hero />
-        <Features />
-        <FAQ />
-      </main>
-      <div id="cta">
-        <ParticleCTA />
-      </div>
-    </>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 

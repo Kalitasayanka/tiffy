@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { io } from 'socket.io-client';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -8,6 +11,7 @@ const Features = () => {
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const cardsRef = useRef([]);
@@ -156,6 +160,14 @@ const Features = () => {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    const socket = io(`${API_URL}`);
+    socket.on('features_updated', () => {
+      setRefreshKey(prev => prev + 1);
+    });
+    return () => socket.disconnect();
+  }, []);
+
   // Animate map content entrance with GSAP
   useEffect(() => {
     if (!loading && mapContentRef.current) {
@@ -176,7 +188,7 @@ const Features = () => {
     gsap.to(el, { rotateY: 0, rotateX: 0, scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' });
   };
 
-  const featureCards = [
+  const initialFeatureCards = [
     {
       icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></svg>,
       color: 'red', gradient: 'linear-gradient(90deg,#E05252,#FFADAD)',
@@ -194,11 +206,50 @@ const Features = () => {
     },
   ];
 
-  const deliveryItems = [
+  const initialDeliveryItems = [
     { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>, title: 'Automated Route Planning', desc: 'Generate optimal delivery routes to save time and reduce fuel costs.' },
     { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="3" width="15" height="13" /><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" /><circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" /></svg>, title: 'Driver Management', desc: 'Assign deliveries, track driver progress, and manage fleets efficiently.' },
     { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>, title: 'Real-Time Tracking', desc: 'Keep customers informed with live delivery updates and ETAs.' },
   ];
+
+  const [featureCards, setFeatureCards] = useState(initialFeatureCards);
+  const [deliveryItems, setDeliveryItems] = useState(initialDeliveryItems);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/features`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const merged = data.map((item, index) => ({
+            ...item,
+            icon: initialFeatureCards[index % initialFeatureCards.length].icon,
+            desc: item.description || item.desc
+          }));
+          setFeatureCards(merged);
+          setTimeout(() => {
+            gsap.fromTo(cardsRef.current,
+              { opacity: 0, y: 30, rotationX: 5, scale: 0.95 },
+              { opacity: 1, y: 0, rotationX: 0, scale: 1, duration: 0.8, stagger: 0.1, ease: 'power2.out', overwrite: 'auto' }
+            );
+          }, 100);
+        }
+      })
+      .catch(console.error);
+
+    fetch(`${API_URL}/api/delivery-items`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const merged = data.map((item, index) => ({
+            ...item,
+            icon: initialDeliveryItems[index % initialDeliveryItems.length].icon,
+            desc: item.description || item.desc
+          }));
+          setDeliveryItems(merged);
+        }
+      })
+      .catch(console.error);
+  }, [refreshKey]);
 
   return (
     <section id="features" ref={sectionRef} className="container py-5 my-5">
@@ -239,7 +290,7 @@ const Features = () => {
                   {card.icon}
                 </div>
                 <h4 className="fw-bold mb-3 h5">{card.title}</h4>
-                <p className="small mb-0" style={{ lineHeight: 1.6, color: 'var(--text-light)' }}>{card.desc}</p>
+                <p className="small mb-0" style={{ lineHeight: 1.6, color: 'var(--text-light)', wordBreak: 'break-word' }}>{card.desc}</p>
               </div>
             </div>
           ))}

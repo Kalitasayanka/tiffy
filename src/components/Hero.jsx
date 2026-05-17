@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MessageSquare } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +13,7 @@ const AnimLine = ({ children, style = {} }) => (
 );
 
 const Hero = () => {
+  const { openModal } = useAuth();
   const sectionRef = useRef(null);
   const badgeRef = useRef(null);
   const headRef = useRef(null);
@@ -267,12 +269,14 @@ const Hero = () => {
           <button
             style={{ background: 'white', color: '#CC5500', padding: '1.1rem 2.5rem', borderRadius: '50px', fontSize: '1.05rem', fontWeight: 800, border: 'none', boxShadow: '0 12px 40px rgba(0,0,0,0.15)', cursor: 'pointer' }}
             onMouseEnter={onBtnEnter} onMouseLeave={onBtnLeave}
+            onClick={() => openModal('signup')}
           >
             Start free trial
           </button>
           <button
             style={{ background: 'rgba(255,255,255,0.15)', color: 'white', padding: '1.1rem 2.5rem', borderRadius: '50px', fontSize: '1.05rem', fontWeight: 700, border: '1px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(8px)', cursor: 'pointer' }}
             onMouseEnter={onBtnEnter} onMouseLeave={onBtnLeave}
+            onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
           >
             See how it works
           </button>
@@ -310,6 +314,7 @@ const Hero = () => {
       <div ref={chatRef} className="d-none d-lg-flex align-items-center gap-3 position-absolute" style={{ opacity: 0, bottom: '3.5rem', left: '3.5rem', zIndex: 10 }}>
         <div className="rounded-circle d-flex align-items-center justify-content-center shadow-lg cursor-pointer"
           style={{ width: 56, height: 56, background: '#FF6B6B' }}
+          onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}
           onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.1, duration: 0.4, ease: 'expo.out' })}
           onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' })}>
           <MessageSquare color="white" />

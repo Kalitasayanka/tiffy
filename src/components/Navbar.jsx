@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
+  const { user, logout, openModal } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -87,7 +89,7 @@ const Navbar = () => {
   const navItems = [
     { label: 'Features', href: '#features' },
     { label: 'Blog', href: '#blog' },
-    { label: 'Login', href: '#login' }
+    { label: user ? 'Logout' : 'Login', href: '#' }
   ];
 
   return (
@@ -196,7 +198,12 @@ const Navbar = () => {
               key={item.label}
               ref={el => linksRef.current[i] = el}
               href={item.href}
-              className={`${item.label === 'Login' ? 'ms-1' : ''}`}
+              className={`${item.label === 'Login' || item.label === 'Logout' ? 'ms-1 cursor-pointer' : ''}`}
+              onClick={(e) => {
+                if (item.label === 'Login') { e.preventDefault(); openModal('login'); }
+                if (item.label === 'Logout') { e.preventDefault(); logout(); }
+                if (item.label === 'Blog') { e.preventDefault(); alert('Blog coming soon!'); }
+              }}
               onMouseEnter={() => setHoveredIndex(i)}
               onMouseLeave={() => setHoveredIndex(null)}
               style={{
@@ -220,6 +227,7 @@ const Navbar = () => {
             ref={btnRef}
             onMouseMove={handleBtnMove}
             onMouseLeave={handleBtnLeave}
+            onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}
             style={{
               padding: '0.65rem 1.4rem',
               borderRadius: '50px',
@@ -274,7 +282,12 @@ const Navbar = () => {
                 fontSize: '1rem',
                 borderBottom: i < navItems.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none',
               }}
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={(e) => {
+                if (item.label === 'Login') { e.preventDefault(); setMobileMenuOpen(false); openModal('login'); }
+                else if (item.label === 'Logout') { e.preventDefault(); setMobileMenuOpen(false); logout(); }
+                else if (item.label === 'Blog') { e.preventDefault(); alert('Blog coming soon!'); setMobileMenuOpen(false); }
+                else { setMobileMenuOpen(false); }
+              }}
             >
               {item.label}
             </a>
@@ -286,7 +299,10 @@ const Navbar = () => {
               color: 'white',
               boxShadow: '0 8px 20px rgba(204,85,0,0.2)',
             }}
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={() => {
+              setMobileMenuOpen(false);
+              document.getElementById('cta').scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             Book a Call
           </button>
